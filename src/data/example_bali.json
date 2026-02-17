@@ -1,0 +1,128 @@
+{
+  "summary": "Bali en 3 días: Un escape relámpago a la Isla de los Dioses. Mezcla de espiritualidad en Ubud y atardeceres épicos en Uluwatu. Perfecto para luna de miel con toques de aventura.",
+  "flights_suggestion": {
+    "airline": "Qantas / Jetstar (Vía SYD)",
+    "route": "SCL -> SYD -> DPS",
+    "price_estimate": "Est. $1,450 - $1,700 USD",
+    "duration": "28h Total",
+    "stops": "1 Escala Larga",
+    "emoji_icon": "✈️",
+    "call_to_action": "Rastrear Vuelos",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/bali",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "The Kayon Jungle Resort",
+      "location": "Ubud (Selva)",
+      "price_night": "$350 USD / villa",
+      "reason_to_book": "Esa piscina infinita de tres niveles que ves en Instagram. Solo adultos.",
+      "emoji_icon": "bamboo",
+      "call_to_action": "Ver Disponibilidad",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/kayon-jungle",
+      "tag_color": "#00C2FF",
+      "badges": ["Honeymoon", "Infinity Pool"]
+    },
+    {
+      "name": "Dreamsea Surf Camp",
+      "location": "Uluwatu (Acantilado)",
+      "price_night": "$120 USD / hab",
+      "reason_to_book": "Despiertas literalmente sobre el mar. Vibe bohemio y surf de clase mundial.",
+      "emoji_icon": "surf",
+      "call_to_action": "Oferta Secreta -15%",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/dreamsea-uluwatu",
+      "tag_color": "#FF9F66",
+      "badges": ["Vista al Mar", "Surf"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Cascada Kanto Lampo (7 AM)",
+      "description": "Todo el mundo va a Tegenungan. Tú ve a Kanto Lampo antes de las 8 AM para tener la foto viral sin 500 personas.",
+      "type": "Hack",
+      "emoji_icon": "🌊",
+      "tag_color": "#FF9F66"
+    },
+    {
+      "title": "Cena en Warung Local",
+      "description": "Olvida los restaurantes 'aesthetic'. Come Babi Guling (cerdo asado) en 'Warung Babi Guling Ibu Oka' en Ubud.",
+      "type": "Comida",
+      "emoji_icon": "🐷",
+      "tag_color": "#FF9F66"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Inmersión Cultural en Ubud",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Monkey Forest (Con Cuidado)",
+          "description": "Camina por el bosque sagrado. Ojo con los lentes, los monos son ladrones profesionales.",
+          "cost": "$5 USD",
+          "emoji_icon": "🐒",
+          "location_url": "https://goo.gl/maps/...",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Tarde",
+          "name": "Arrozales de Tegallalang",
+          "description": "Camino por las terrazas de arroz. Hidratación clave, hace calor húmedo.",
+          "cost": "Gratis / Donación",
+          "emoji_icon": "🌾",
+          "location_url": "",
+          "is_paid_activity": false
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Playas y Acantilados del Sur",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Transfer a Uluwatu",
+          "description": "Baja al sur de la isla. El tráfico en Bali es brutal, considera 2 horas de viaje.",
+          "cost": "$25 USD (Driver)",
+          "emoji_icon": "🚗",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Atardecer",
+          "name": "Templo Uluwatu & Danza Kecak",
+          "description": "Ver el atardecer en el acantilado mientras 50 hombres cantan el Kecak. Imperdible.",
+          "cost": "$10 USD",
+          "emoji_icon": "🔥",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Relax y Despedida",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Playa Padang Padang",
+          "description": "La playa de 'Comer, Rezar, Amar'. Pequeña pero icónica. Ve temprano.",
+          "cost": "$1 USD",
+          "emoji_icon": "🏖️",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Tarde",
+          "name": "Single Fin Bar",
+          "description": "Un Bintang frío viendo a los surfistas profesionales antes de ir al aeropuerto.",
+          "cost": "$5 USD",
+          "emoji_icon": "🍺",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

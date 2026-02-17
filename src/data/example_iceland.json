@@ -1,0 +1,86 @@
+{
+  "summary": "Islandia: La Vuelta a la Isla (Ring Road) en 7 días. Glaciares, cascadas infinitas y auroras boreales. Una expedición épica optimizada para fotografía y termas naturales.",
+  "flights_suggestion": {
+    "airline": "Icelandair / British Airways",
+    "route": "SCL -> LHR -> KEF",
+    "price_estimate": "Est. $1,800 - $2,200 USD",
+    "duration": "24h+ Total",
+    "stops": "1-2 Escalas",
+    "emoji_icon": "✈️",
+    "call_to_action": "Seguir Precios de Vuelo",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/iceland",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "The Retreat at Blue Lagoon",
+      "location": "Grindavík",
+      "price_night": "$1,200 USD / suite",
+      "reason_to_book": "Privacidad absoluta con acceso directo a las aguas termales. El lujo máximo.",
+      "emoji_icon": "spa",
+      "call_to_action": "Reservar Experiencia",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/blue-lagoon",
+      "tag_color": "#00C2FF",
+      "badges": ["Ultra Lujo", "Thermal Spa"]
+    },
+    {
+      "name": "Kex Hostel",
+      "location": "Reykjavík",
+      "price_night": "$70 USD / dormitorio",
+      "reason_to_book": "Vibe hipster en una antigua fábrica de galletas. El corazón social de la ciudad.",
+      "emoji_icon": "beer",
+      "call_to_action": "Ver Camas Libres",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/kex-hostel",
+      "tag_color": "#FF9F66",
+      "badges": ["Social", "Industrial Design"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Seljavallalaug (La Piscina Oculta)",
+      "description": "Sáltate el Blue Lagoon un día. Camina 15 mins por un cañón para encontrar la piscina termal más antigua de la isla, en medio de la nada.",
+      "type": "Hack",
+      "emoji_icon": "🏊‍♂️",
+      "tag_color": "#FF9F66"
+    },
+    {
+      "title": "Bæjarins Beztu Pylsur",
+      "description": "El hot dog más famoso del mundo. Pide 'eina með öllu' (con todo). Es la comida más barata y rica de Reikiavik.",
+      "type": "Food",
+      "emoji_icon": "🌭",
+      "tag_color": "#FF9F66"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "El Círculo Dorado",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Thingvellir & Geysir",
+          "description": "Mira la falla entre placas tectónicas y aguanta la respiración para el estallido de Strokkur.",
+          "cost": "Gratis (Parking $5)",
+          "emoji_icon": "🌋",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Cueva de Hielo y Jökulsárlón",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Laguna de Glaciares",
+          "description": "Navega entre icebergs azules que flotan hacia el mar. Si tienes suerte, verás focas.",
+          "cost": "$80 USD (Boat Tour)",
+          "emoji_icon": "🧊",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

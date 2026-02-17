@@ -1,0 +1,95 @@
+{
+  "summary": "Tokio inmersivo y económico: 7 días de neón, templos y la mejor comida callejera del mundo sin quebrar el banco.",
+  "flights_suggestion": {
+    "airline": "United / ANA (Escala en LAX)",
+    "route": "SCL -> LAX -> NRT",
+    "price_estimate": "Est. $1,100 - $1,300 USD",
+    "duration": "26h Total",
+    "stops": "1 Escala",
+    "emoji_icon": "✈️",
+    "call_to_action": "Rastrear Precios Bajos",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/tokyo",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "Nui. Hostel & Bar Lounge",
+      "location": "Taito City (Cerca de Asakusa)",
+      "price_night": "$35 USD / cama",
+      "reason_to_book": "Vibra increíble, bar local y diseño industrial.",
+      "emoji_icon": "hostel",
+      "call_to_action": "Ver disponibilidad",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/nui-hostel",
+      "tag_color": "#00E096",
+      "badges": ["Mochalero Premium", "Bar Local"]
+    },
+    {
+      "name": "APA Hotel Asakusa Tawaramachi",
+      "location": "Asakusa",
+      "price_night": "$75 USD / hab",
+      "reason_to_book": "Privacidad y Onsen (baño termal) incluido gratis.",
+      "emoji_icon": "onsen",
+      "call_to_action": "Oferta Secreta -10%",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/apa-asakusa",
+      "tag_color": "#00C2FF",
+      "badges": ["Onsen Gratis", "Privado"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Omoide Yokocho (Memory Lane)",
+      "description": "Callejón de yakitori en Shinjuku. Pide 'kawa' (piel de pollo) y cerveza fría. Turístico pero auténtico si vas tarde.",
+      "type": "Comida",
+      "emoji_icon": "🍢",
+      "tag_color": "#FF9F66"
+    },
+    {
+      "title": "Vistas Gratis del Gobierno Metropolitano",
+      "description": "Sáltate la Tokyo Skytree ($20). El edificio del gobierno en Shinjuku es gratis y la vista es igual de brutal.",
+      "type": "Hack",
+      "emoji_icon": "🏙️",
+      "tag_color": "#FF9F66"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Llegada y Neón en Shinjuku",
+      "activities": [
+        {
+          "time": "Evening",
+          "name": "Exploración de Kabukicho",
+          "description": "Camina por el distrito rojo y ve a ver a Godzilla. Cena en Omoide Yokocho.",
+          "cost": "$15 USD",
+          "emoji_icon": "🌃",
+          "location_url": "https://goo.gl/maps/...",
+          "is_paid_activity": false
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Cultura Pop y Templos Viejos",
+      "activities": [
+        {
+          "time": "Morning",
+          "name": "Templo Senso-ji",
+          "description": "El templo más antiguo. Ve temprano (7 AM) para evitar multitudes.",
+          "cost": "Gratis",
+          "emoji_icon": "⛩️",
+          "location_url": "https://goo.gl/maps/...",
+          "is_paid_activity": false
+        },
+        {
+          "time": "Lunch",
+          "name": "Comida Callejera en Nakamise-dori",
+          "description": "Prueba el Melon Pan y los Ningyo-yaki recientes.",
+          "cost": "$10 USD",
+          "emoji_icon": "melon",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

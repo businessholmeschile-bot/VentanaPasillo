@@ -1,0 +1,191 @@
+{
+  "summary": "Positano, Costa Amalfitana: 3 días de Dolce Vita pura. Te llevaremos a los spots más fotogénicos, los mejores restaurantes frente al mar y una escapada de lujo a Capri. Prepárate para escaleras y vistas infinitas.",
+  "flights_suggestion": {
+    "airline": "Iberia / ITA Airways (Vía Roma/Nápoles)",
+    "route": "SCL -> NAP (Nápoles)",
+    "price_estimate": "Est. $1,100 - $1,400 USD",
+    "duration": "16h Total",
+    "stops": "1 Escala",
+    "emoji_icon": "✈️",
+    "call_to_action": "Vuelos a Nápoles",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/positano",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "Hotel Marincanto",
+      "location": "Centro Positano",
+      "price_night": "Desde €250/noche",
+      "reason_to_book": "Vistas icónicas que ves en Instagram y una de las pocas piscinas infinitas reales del pueblo.",
+      "emoji_icon": "hotel",
+      "call_to_action": "Ver Marincanto",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/marincanto",
+      "tag_color": "#00C2FF",
+      "badges": ["Iconic View", "Infinity Pool"]
+    },
+    {
+      "name": "Le Sirenuse",
+      "location": "Via Cristoforo Colombo",
+      "price_night": "Luxury Splurge",
+      "reason_to_book": "El hotel más legendario de la costa. Si no te alojas, ve al menos por un cóctel al atardecer.",
+      "emoji_icon": "cocktail",
+      "call_to_action": "Ver Le Sirenuse",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/sirenuse",
+      "tag_color": "#FF9F66",
+      "badges": ["World Famous", "Luxury"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Sendero de los Dioses (Il Sentiero degli Dei)",
+      "description": "La mejor caminata de Europa. Hazla desde Bomerano hacia Positano (cuesta abajo) para tener las vistas de frente todo el tiempo.",
+      "type": "Adventure",
+      "emoji_icon": "🥾",
+      "tag_color": "#FF9F66"
+    },
+    {
+      "title": "Da Adolfo (Playa Privada)",
+      "description": "Toma el bote con el pescadito rojo en el muelle. Te llevan a una playa privada increíble con la mejor mozzarella a la parrilla.",
+      "type": "Foodie",
+      "emoji_icon": "🚤",
+      "tag_color": "#00C2FF"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Explorando Positano",
+      "activities": [
+        {
+          "time": "Desayuno",
+          "name": "Café Positano",
+          "description": "Pide un Cappuccino y Cornetto mientras ves despertar al pueblo.",
+          "cost": "€10",
+          "emoji_icon": "☕",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+         {
+          "time": "Mañana",
+          "name": "Spiaggia Grande",
+          "description": "La playa principal. Relájate y admira las casas de colores cayendo al mar.",
+          "cost": "Gratis",
+          "emoji_icon": "🏖️",
+          "location_url": "",
+          "is_paid_activity": false
+        },
+        {
+          "time": "Almuerzo",
+          "name": "Ristorante da Vincenzo",
+          "description": "Prueba la Pasta alla Genovese, un clásico local imperdible.",
+          "cost": "€20 - €30",
+          "emoji_icon": "🍝",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Tarde",
+          "name": "Shopping Local",
+          "description": "Recorre las calles llenas de cerámica, lino y galerías de arte.",
+          "cost": "Gratis",
+          "emoji_icon": "🛍️",
+          "location_url": "",
+          "is_paid_activity": false
+        },
+        {
+          "time": "Cena",
+          "name": "La Terraza",
+          "description": "Mariscos frescos y vino local con la brisa nocturna. Reserva antes.",
+          "cost": "€30 - €50",
+          "emoji_icon": "🍷",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Escapada VIP a Capri",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Ferry a Capri",
+          "description": "Navega por el Tirreno. El viaje en sí es un espectáculo.",
+          "cost": "€30 (Roundtrip)",
+          "emoji_icon": "ferry",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Almuerzo",
+          "name": "Ristorante Il Geranio",
+          "description": "Ensalada Caprese (obvio) con vista a los Faraglioni.",
+          "cost": "€25 - €40",
+          "emoji_icon": "🥗",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+         {
+          "time": "Tarde",
+          "name": "La Gruta Azul",
+          "description": "La cueva marina más famosa del mundo. Turístico pero mágico.",
+          "cost": "€15",
+          "emoji_icon": "🔵",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Cena",
+          "name": "Da Paolino (Capri)",
+          "description": "Cena bajo un techo de limoneros reales. Pide Pizza y Limoncello.",
+          "cost": "€35 - €50",
+          "emoji_icon": "🍋",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Cultura y Vistas Épicas",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Iglesia Santa María Assunta",
+          "description": "Visita el ícono de la cúpula de mayólica que sale en todas las fotos.",
+          "cost": "Gratis",
+          "emoji_icon": "⛪",
+          "location_url": "",
+          "is_paid_activity": false
+        },
+        {
+          "time": "Almuerzo",
+          "name": "Chez Black",
+          "description": "Spaghetti alle Vongole en primera línea de playa. Ver y ser visto.",
+          "cost": "€25",
+          "emoji_icon": "🍝",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+         {
+          "time": "Tarde",
+          "name": "Sendero de los Dioses",
+          "description": "Caminata de atardecer entre las nubes y el mar. Lleva agua.",
+          "cost": "Gratis",
+          "emoji_icon": "☁️",
+          "location_url": "",
+          "is_paid_activity": false
+        },
+         {
+          "time": "Noche",
+          "name": "Franco's Bar",
+          "description": "Despedida con clase. El mejor cóctel con vista de toda la costa.",
+          "cost": "€18 - €25",
+          "emoji_icon": "🍸",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

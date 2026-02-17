@@ -1,0 +1,75 @@
+{
+  "summary": "Eurotrip 2026: 30 días cruzando el corazón de Europa. De los canales de Ámsterdam a las ruinas de Roma, usando el Interrail como columna vertebral. Una odisea de historia, fiesta y museos.",
+  "flights_suggestion": {
+    "airline": "Iberia / Air France",
+    "route": "SCL -> MAD / CDG",
+    "price_estimate": "Est. $1,200 - $1,500 USD",
+    "duration": "13h Vuelo Directo",
+    "stops": "Non-stop",
+    "emoji_icon": "✈️",
+    "call_to_action": "Ver Vuelos a Madrid",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/europe",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "Generator Hostels Group",
+      "location": "Londres, Berlín, París",
+      "price_night": "$50 USD avg",
+      "reason_to_book": "La red de hostales con más estilo de Europa. Confiables, limpios y con bares increíbles.",
+      "emoji_icon": "bed",
+      "call_to_action": "Comprar Pase Multi-Hostel",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/generator",
+      "tag_color": "#FF9F66",
+      "badges": ["Backpacker", "Social Network"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Interrail Pass (Global)",
+      "description": "No compres tickets individuales. El pase de 10 días en 2 meses es el 'sweet spot' de ahorro.",
+      "type": "Money Saver",
+      "emoji_icon": "🎫",
+      "tag_color": "#00C2FF"
+    },
+    {
+      "title": "Sandeman's Free Tours",
+      "description": "En cada ciudad, haz el tour a pie apenas llegues. Es la mejor forma de orientarte gratis.",
+      "type": "Hack",
+      "emoji_icon": "🚶‍♂️",
+      "tag_color": "#FF9F66"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Madrid: La Puerta de Europa",
+      "activities": [
+        {
+          "time": "Tarde",
+          "name": "Museo del Prado & Cañas",
+          "description": "Arte de clase mundial seguido de un tapeo por La Latina.",
+          "cost": "$15 USD",
+          "emoji_icon": "🖼️",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "title": "Praga: La Ciudad Dorada",
+      "activities": [
+        {
+          "time": "Noche",
+          "name": "Pub Crawl en Praga",
+          "description": "Explora la vida nocturna de una de las ciudades más bellas (y baratas) de Europa.",
+          "cost": "$25 USD",
+          "emoji_icon": "🍻",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

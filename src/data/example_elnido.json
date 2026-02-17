@@ -1,0 +1,119 @@
+{
+  "summary": "El Nido, Palawan (Filipinas): El paraíso de islas que estabas buscando. Nota: El Nido está en Filipinas, no en Indonesia, ¡pero Andy te lleva igual! 3 días de saltos entre islas, playas escondidas y el mejor ambiente para viajar solo.",
+  "flights_suggestion": {
+    "airline": "Philippine Airlines / AirSwift",
+    "route": "SCL -> MNL -> ENI",
+    "price_estimate": "Est. $1,600 - $1,900 USD",
+    "duration": "32h Total",
+    "stops": "2 Escalas",
+    "emoji_icon": "✈️",
+    "call_to_action": "Explorar Vuelos Directos",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/elnido",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "Outpost Beach Hostel",
+      "location": "Corong Corong Beach",
+      "price_night": "$45 USD / cama",
+      "reason_to_book": "El mejor ambiente social de la isla. Atardeceres épicos y gente de todo el mundo.",
+      "emoji_icon": "beer",
+      "call_to_action": "Reservar Cama",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/outpost-hostel",
+      "tag_color": "#FF9F66",
+      "badges": ["Solo Travelers", "Social", "Sunset View"]
+    },
+    {
+      "name": "Spin Designer Hostel",
+      "location": "El Nido Town",
+      "price_night": "$60 USD / hab compartida",
+      "reason_to_book": "Diseño premium, ultra limpio y a pasos de la acción del pueblo.",
+      "emoji_icon": "design",
+      "call_to_action": "Ver Disponibilidad",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/spin-hostel",
+      "tag_color": "#00C2FF",
+      "badges": ["Award Winning", "Design", "Safe"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Nacpan Beach (Alquiler de Moto)",
+      "description": "No te quedes solo en los Tours. Arrienda una moto y maneja 45 mins hacia el norte a Nacpan. 4km de arena blanca solo para ti.",
+      "type": "Adventure",
+      "emoji_icon": "🛵",
+      "tag_color": "#FF9F66"
+    },
+    {
+      "title": "Sava Beach Bar",
+      "description": "Donde todos terminan la noche. Música increíble y cócteles que no matan tu presupuesto de viajero solo.",
+      "type": "Party",
+      "emoji_icon": "🍸",
+      "tag_color": "#BD00FF"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Tour A: Lagunas y Esnórquel",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Big Lagoon",
+          "description": "Entra en Kayak a aguas turquesas rodeadas de acantilados de caliza. Es la foto de Palawan.",
+          "cost": "$24 USD (Tour)",
+          "emoji_icon": "🚣",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Evening",
+          "name": "Atardecer en Las Cabañas",
+          "description": "Tómate un shake de mango mientras ves el sol caer. El mejor spot post-tour.",
+          "cost": "$5 USD",
+          "emoji_icon": "🌅",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Aventura Terrestre y Nacpan",
+      "activities": [
+        {
+          "time": "Todo el día",
+          "name": "Exploración al Norte",
+          "description": "Maneja hasta la playa Nacpan. Cena en los puestos locales de la arena.",
+          "cost": "$15 USD (Moto + Bencina)",
+          "emoji_icon": "🌴",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Tour C: Playas Escondidas",
+      "activities": [
+        {
+          "time": "Mañana",
+          "name": "Hidden Beach & Secret Beach",
+          "description": "Si el mar lo permite, atraviesas un pequeño hueco en la roca para encontrar playas secretas.",
+          "cost": "$26 USD",
+          "emoji_icon": "🏊",
+          "location_url": "",
+          "is_paid_activity": true
+        },
+        {
+          "time": "Night",
+          "name": "Fiesta de Despedida",
+          "description": "Vuelve a Outpost o ve al centro. Es hora de intercambiar Instagrams con tus nuevos amigos de viaje.",
+          "cost": "$20 USD",
+          "emoji_icon": "✨",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "summary": "Torres del Paine (Chile): Expedición de 5 días al fin del mundo. Una combinación de trekking exigente por la base de las Torres y desconexión total en estancias patagónicas de lujo.",
+  "flights_suggestion": {
+    "airline": "LATAM / Sky Airline",
+    "route": "SCL -> PUQ -> PNT",
+    "price_estimate": "Est. $150 - $400 USD",
+    "duration": "3.5h Vuelo + 3h Bus",
+    "stops": "Directo a Punta Arenas",
+    "emoji_icon": "✈️",
+    "call_to_action": "Buscar Ofertas LATAM",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/chile",
+    "tag_color": "#00C2FF"
+  },
+  "hotels_suggestion": [
+    {
+      "name": "EcoCamp Patagonia",
+      "location": "Sector Las Torres",
+      "price_night": "$450 USD / domo",
+      "reason_to_book": "Duerme en un domo geodésico sustentable con vista directa al Paine. Experiencia única.",
+      "emoji_icon": "dome",
+      "call_to_action": "Reservar Domo",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/ecocamp",
+      "tag_color": "#00C2FF",
+      "badges": ["Eco-Friendly", "Luxury Trekking"]
+    },
+    {
+      "name": "Hostel Río Serrano",
+      "location": "Entrada Serrano",
+      "price_night": "$35 USD / cama",
+      "reason_to_book": "La base ideal y económica para entrar al parque. Vistas increíbles al macizo.",
+      "emoji_icon": "mountain",
+      "call_to_action": "Ver Disponibilidad",
+      "affiliate_link": "https://ventanapasillo.com/track/hotels/rioserrano",
+      "tag_color": "#FF9F66",
+      "badges": ["Backpacker", "Best Value"]
+    }
+  ],
+  "local_secrets": [
+    {
+      "title": "Navegación Glaciar Grey (Side Trip)",
+      "description": "No hagas solo el trekking. Toma el catamarán para tocar el hielo milenario. Vale cada peso.",
+      "type": "Adventure",
+      "emoji_icon": "🚢",
+      "tag_color": "#BD00FF"
+    },
+    {
+      "title": "Cervecería Baguales (Puerto Natales)",
+      "description": "Al volver del parque, la 'Baguales Ale' es obligatoria junto a una hamburguesa de cordero.",
+      "type": "Post-Trek",
+      "emoji_icon": "🍺",
+      "tag_color": "#FF9F66"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Llegada a Natales y Briefing",
+      "activities": [
+        {
+          "time": "Tarde",
+          "name": "Preparación de Equipo",
+          "description": "Arriendo de carpas y compra de raciones de marcha. Cena de carga de carbohidratos.",
+          "cost": "$20 USD",
+          "emoji_icon": "🎒",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Base Torres (El Desafío)",
+      "activities": [
+        {
+          "time": "Madrugada",
+          "name": "Trekking al Mirador Base",
+          "description": "8 horas de caminata para ver las icónicas torres al amanecer. Épico.",
+          "cost": "Entrada Parque ($35)",
+          "emoji_icon": "🥾",
+          "location_url": "",
+          "is_paid_activity": true
+        }
+      ]
+    }
+  ]
+}
