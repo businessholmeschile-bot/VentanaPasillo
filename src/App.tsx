@@ -1,227 +1,301 @@
-import React, { useState, useEffect } from 'react';
-import FlightCard from './components/FlightCard';
-import HotelCard from './components/HotelCard';
-import ItineraryTimeline from './components/ItineraryTimeline';
-import LocalSecret from './components/LocalSecret';
-import HeroSearch from './components/HeroSearch';
-import LoadingState from './components/LoadingState';
-import { Sun, Moon, Globe } from 'lucide-react';
-
-// Data Imports
-import baliData from './data/example_bali.json';
-import tokyoData from './data/example_tokyo.json';
-import nidoData from './data/example_elnido.json';
-import positanoData from './data/example_positano.json';
-import icelandData from './data/example_iceland.json';
-import chileData from './data/example_chile.json';
-import eurotripData from './data/example_eurotrip.json';
-import { generateProceduralPlan } from './services/aiPlanner';
-
-// Type Definitions
-// We need to extend the type to match what generateProceduralPlan returns if it's slightly different, 
-// but for now let's assume compat or cast.
-type TravelData = typeof baliData;
-
-const translations = {
-  es: {
-    heroTitle: "Ventanapasillo",
-    heroSub: "Tu arquitecto de viajes personal.",
-    thinking: "Andy está pensando...",
-    optimizedRoute: "Ruta Optimizada",
-    tripTo: "Tu viaje a",
-    recommendedFlight: "Mejor Vuelo Detectado",
-    localSecrets: "Secretos Locales",
-    whereToSleep: "Alojamiento Estratégico",
-    itinerary: "Itinerario: Día a Día",
-    insider: "INSIDER ONLY",
-    lowestPrice: "LOWEST PRICE"
-  },
-  en: {
-    heroTitle: "Ventanapasillo",
-    heroSub: "Your personal travel architect.",
-    thinking: "Andy is thinking...",
-    optimizedRoute: "Optimized Route",
-    tripTo: "Your trip to",
-    recommendedFlight: "Best Flight Detected",
-    localSecrets: "Local Secrets",
-    whereToSleep: "Strategic Accommodation",
-    itinerary: "Itinerary: Day by Day",
-    insider: "INSIDER ONLY",
-    lowestPrice: "LOWEST PRICE"
-  }
-};
-
-const generateTravelPlan = async (query: string): Promise<TravelData> => {
-  return new Promise((resolve) => {
-    const q = query.toLowerCase();
-    setTimeout(() => {
-      if (q.includes('nido') || q.includes('palawan')) {
-        resolve(nidoData as TravelData);
-      } else if (q.includes('tokio') || q.includes('japon') || q.includes('japan')) {
-        resolve(tokyoData as TravelData);
-      } else if (q.includes('positano') || q.includes('italia') || q.includes('amalfi')) {
-        resolve(positanoData as TravelData);
-      } else if (q.includes('islandia') || q.includes('iceland')) {
-        resolve(icelandData as TravelData);
-      } else if (q.includes('chile') || q.includes('paine') || q.includes('natales')) {
-        resolve(chileData as TravelData);
-      } else if (q.includes('euro') || q.includes('europa') || q.includes('europe')) {
-        resolve(eurotripData as TravelData);
-      } else {
-        // AI FALLBACK: Generate a unique plan for the requested destination
-        // instead of defaulting to Bali. This solves the "Pucol != Bali" issue.
-        const proceduralPlan = generateProceduralPlan(query);
-        resolve(proceduralPlan as unknown as TravelData);
-      }
-    }, 3500);
-  });
-};
+import React, { useState, useEffect, useRef } from "react";
+import Header from "./components/layout/Header";
+import InteractiveMap, {
+  Destination,
+  VALIDATED_DESTINATIONS,
+} from "./components/map/InteractiveMap";
+import { AndyBrain } from "./services/AndyBrain";
+import TripDashboard from "./components/dashboard/TripDashboard";
+import { TravelPlan, generateProceduralPlan } from "./services/aiPlanner";
+import PlaneTakeoff from "./components/animations/PlaneTakeoff";
+import AuthModal from "./components/auth/AuthModal";
+import { supabase } from "./lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
+import { AffiliateService } from "./services/affiliateService";
+import FloatingRouteBar from "./components/map/FloatingRouteBar";
 
 const App: React.FC = () => {
-  const [data, setData] = useState<TravelData | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-  const [lang, setLang] = useState<'es' | 'en'>('es');
+  // Default to Light "White Mode"
+  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [lang, setLang] = useState<"es" | "en">("es");
 
-  const t = translations[lang];
+  // Map Filter State with Persistence
+  const [budget, setBudget] = useState<number>(() => {
+    const saved = localStorage.getItem("vp_budget");
+    return saved ? Number(saved) : 3000;
+  });
+  const [days, setDays] = useState<number>(() => {
+    const saved = localStorage.getItem("vp_days");
+    return saved ? Number(saved) : 7;
+  });
+  const [climates, setClimates] = useState<string[]>([]);
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [selectedDestinations, setSelectedDestinations] = useState<string[]>(
+    () => {
+      const saved = localStorage.getItem("vp_destinations");
+      return saved ? JSON.parse(saved) : [];
+    },
+  );
 
-  const handleSearch = async (query: string) => {
-    setIsSearching(true);
-    setHasSearched(true);
-    setData(null);
-    try {
-      const result = await generateTravelPlan(query);
-      setData(result);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [activePlan, setActivePlan] = useState<TravelPlan | null>(null);
+  const [loadingMsg, setLoadingMsg] = useState("Andy está optimizando tu ruta...");
+  const [isFlying, setIsFlying] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  const dashboardRef = useRef<HTMLDivElement>(null);
+  const planButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Loading Message Cycle
+  useEffect(() => {
+    if (!isLoading) return;
+    const msgs = [
+      "Andy está analizando estacionalidad...",
+      "Cruzando datos de vuelos en tiempo real...",
+      "Buscando los mejores hoteles para tu presupuesto...",
+      "Diseñando experiencias auténticas...",
+      "Casi listo. Ajustando detalles finales..."
+    ];
+    let i = 0;
+    const interval = setInterval(() => {
+      setLoadingMsg(msgs[i % msgs.length]);
+      i++;
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
+  // Persistence Effects
+  useEffect(() => {
+    localStorage.setItem("vp_budget", budget.toString());
+  }, [budget]);
+
+  useEffect(() => {
+    localStorage.setItem("vp_days", days.toString());
+  }, [days]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "vp_destinations",
+      JSON.stringify(selectedDestinations),
+    );
+  }, [selectedDestinations]);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [theme]);
 
-  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  const toggleLang = () => setLang(prev => prev === 'es' ? 'en' : 'es');
+  const toggleTheme = () =>
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  const toggleLang = () => setLang((prev) => (prev === "es" ? "en" : "es"));
+
+  const toggleClimate = (c: string) => {
+    setClimates((prev) =>
+      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
+    );
+  };
+
+  const toggleThemeTag = (t: string) => {
+    setSelectedThemes((prev) =>
+      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
+    );
+  };
+
+  const handleToggleDestination = (id: string, isValid: boolean) => {
+    setSelectedDestinations((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((d) => d !== id);
+      } else {
+        if (!isValid && budget > 0) return prev;
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleRemoveDestination = (id: string) => {
+    setSelectedDestinations(prev => prev.filter(d => d !== id));
+  };
+
+  const handleGeneratePlan = async () => {
+    if (selectedDestinations.length === 0) return;
+    
+    // Trigger Plane Animation
+    setIsFlying(true);
+    setActivePlan(null); // Clear previous results
+    
+    // Smooth scroll and loading delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsLoading(true);
+    setLoadingMsg("Andy está conectándose con la red de viajes...");
+    
+    setTimeout(() => {
+      if (dashboardRef.current) {
+        const top = dashboardRef.current.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 100);
+
+    const destinationNames = selectedDestinations
+      .map((id) => VALIDATED_DESTINATIONS.find((d) => d.id === id)?.name)
+      .join(", ");
+    const query = `Viaje a ${destinationNames} por ${days} días con un presupuesto de $${budget} USD. Filtros: ${climates.join(", ")} ${selectedThemes.join(", ")}.`;
+
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+    if (apiKey) {
+      try {
+        const brain = new AndyBrain(apiKey);
+        const plan = await brain.generateItinerary(query);
+        if (plan) {
+          const enriched = AffiliateService.enrichPlanWithLinks(plan);
+          setActivePlan(enriched);
+        } else {
+          setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
+        }
+      } catch (err) {
+        console.error("AndyBrain Error:", err);
+        setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
+      }
+    } else {
+      // Simulate real thinking time for the demo
+      await new Promise(resolve => setTimeout(resolve, 3500));
+      setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
+    }
+
+    setIsLoading(false);
+    setTimeout(() => setIsFlying(false), 4000);
+  };
+
+  const handleSavePlan = async () => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    // Simulation of saving
+    alert("¡Viaje guardado en tu perfil! Andy lo ha archivado para tu próxima aventura.");
+  };
+
+  const isDark = theme === "dark";
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${theme === 'dark' ? 'bg-brand-dark text-gray-200' : 'bg-gray-50 text-gray-900'} font-sans selection:bg-brand-cyan selection:text-black flex flex-col items-center justify-center`}>
-      
-      {/* Settings Toggles */}
-      <div className="fixed top-6 right-6 z-[60] flex items-center gap-3">
-        <button 
-          onClick={toggleLang}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all ${theme === 'dark' ? 'bg-gray-900 border-gray-800 text-gray-400 hover:text-brand-cyan' : 'bg-white border-gray-200 text-gray-600 hover:text-brand-cyan shadow-sm'}`}
+    <div
+      className={`min-h-screen transition-colors duration-500 ${isDark ? "bg-[#0B1116] text-gray-200" : "bg-white text-slate-900"} font-sans flex flex-col`}
+    >
+      <PlaneTakeoff isFlying={isFlying} buttonRef={planButtonRef} />
+      <Header
+        darkMode={isDark}
+        toggleTheme={toggleTheme}
+        lang={lang}
+        toggleLang={toggleLang}
+        budget={budget}
+        setBudget={setBudget}
+        days={days}
+        setDays={setDays}
+        climates={climates}
+        toggleClimate={toggleClimate}
+        selectedThemes={selectedThemes}
+        toggleThemeTag={toggleThemeTag}
+        selectedDestinations={selectedDestinations}
+        destinations={VALIDATED_DESTINATIONS}
+        onGeneratePlan={handleGeneratePlan}
+        onRemoveDestination={handleRemoveDestination}
+        planButtonRef={planButtonRef}
+        user={user}
+        onLogin={() => setIsAuthModalOpen(true)}
+      />
+
+      <main className="flex-grow flex flex-col relative w-full mt-[60px]">
+        <div
+          className="relative w-full"
+          style={{ height: "calc(100vh - 60px)" }}
         >
-          <Globe size={14} />
-          {lang.toUpperCase()}
-        </button>
-        <button 
-          onClick={toggleTheme}
-          className={`p-2 rounded-full border transition-all ${theme === 'dark' ? 'bg-gray-900 border-gray-800 text-gray-400 hover:text-brand-cyan' : 'bg-white border-gray-200 text-gray-600 hover:text-brand-cyan shadow-sm'}`}
-        >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
-      </div>
-
-      {/* Hero Section */}
-      <div className={`transition-all duration-700 w-full max-w-4xl px-4 ${hasSearched ? 'pt-8 pb-4' : 'h-screen flex flex-col justify-center'}`}>
-          <HeroSearch onSearch={handleSearch} isSearching={isSearching} />
-      </div>
-
-      {/* Loading State */}
-      {isSearching && <LoadingState />}
-
-      {/* Results Container */}
-      {!isSearching && data && (
-        <main className="w-full max-w-5xl px-4 md:px-8 space-y-16 animate-fade-in-up pb-20 mt-12">
-          
-          {/* Destination Header */}
-          <section className="text-center space-y-4">
-             <div className="inline-block px-3 py-1 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-bold uppercase tracking-widest animate-pulse">
-              ✈️ {t.optimizedRoute}
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black max-w-3xl mx-auto leading-tight">
-               <span className={`text-transparent bg-clip-text ${theme === 'dark' ? 'bg-gradient-to-r from-white to-gray-500' : 'bg-gradient-to-r from-gray-900 to-gray-500'}`}>
-                {t.tripTo}
-               </span>{' '}
-               <span className="text-brand-cyan drop-shadow-[0_0_25px_rgba(0,194,255,0.4)] underline decoration-brand-orange decoration-4 underline-offset-4">
-                  {data.summary.includes('Nido') ? 'El Nido, Palawan' : 
-                   data.summary.includes('Tokio') ? 'Tokio, Japón' : 
-                   data.summary.includes('Positano') ? 'Positano, Italia' :
-                   data.summary.includes('Islandia') ? 'Islandia' :
-                   data.summary.includes('Patagonia') ? 'Patagonia, Chile' : // Adjusted check for Chile specific static
-                   data.summary.includes('Euro') ? 'Europa' :
-                   // For procedural plans, use the destination name from the summary logic or object
-                   (data as any).destination_name ? (data as any).destination_name : 
-                   data.summary.split(':')[0] 
-                   }
-               </span>
-            </h2>
-            <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto text-xl leading-relaxed border-l-4 border-brand-orange pl-6 italic`}>
-              "{data.summary}"
-            </p>
-          </section>
-
-          {/* Logistics Dashboard Grid */}
-          <div className="grid md:grid-cols-12 gap-8">
-            <div className="md:col-span-5 space-y-8">
-              <section className="space-y-4">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t.recommendedFlight}</h3>
-                   <span className="text-[10px] bg-green-900/40 text-green-400 px-2 py-0.5 rounded border border-green-800">{t.lowestPrice}</span>
-                </div>
-                <FlightCard {...data.flights_suggestion} />
-              </section>
-
-              <section className="space-y-4">
-                 <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-                    <h3 className="text-sm font-bold text-brand-orange uppercase tracking-widest">{t.localSecrets}</h3>
-                    <span className="bg-brand-orange text-black text-[10px] px-2 rounded font-bold">{t.insider}</span>
-                 </div>
-                 <div className="space-y-4">
-                  {data.local_secrets.map((secret, idx) => (
-                    <LocalSecret key={idx} {...secret} />
-                  ))}
-                 </div>
-              </section>
-            </div>
-
-            <div className="md:col-span-7 space-y-8">
-              <section className="space-y-4">
-                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest border-b border-gray-800 pb-2">{t.whereToSleep}</h3>
-                <div className="grid gap-5">
-                  {data.hotels_suggestion.map((hotel, idx) => (
-                     <HotelCard key={idx} {...hotel} />
-                  ))}
-                </div>
-              </section>
-
-              <section className="space-y-4 pt-4">
-                 <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest border-b border-gray-800 pb-2">{t.itinerary}</h3>
-                 <ItineraryTimeline itinerary={data.itinerary} />
-              </section>
-            </div>
+          <div className="absolute inset-0 z-0">
+            <InteractiveMap
+              budget={budget}
+              days={days}
+              climates={climates}
+              selectedThemes={selectedThemes}
+              selectedDestinations={selectedDestinations}
+              onToggleDestination={handleToggleDestination}
+              isDarkMode={isDark}
+            />
           </div>
 
-        </main>
-      )}
+          <FloatingRouteBar 
+            selectedDestinations={selectedDestinations}
+            destinations={VALIDATED_DESTINATIONS}
+            onRemoveDestination={handleRemoveDestination}
+            isDarkMode={isDark}
+          />
+        </div>
 
-      {/* Footer */}
-      {(data || isSearching) && (
-        <footer className={`w-full border-t border-gray-900 mt-auto py-8 text-center space-y-2`}>
-          <p className="text-gray-600 text-sm">© 2026 Ventanapasillo.com - Powered by Andy v2.0</p>
-          <p className="text-xs text-brand-cyan/40 font-mono">Affiliate Engine Active - Session ID: A1-9982</p>
-        </footer>
-      )}
+        <div ref={dashboardRef} className="w-full">
+          {(isLoading || activePlan) && (
+            <div
+              className={`w-full min-h-screen p-4 md:p-8 ${isDark ? "bg-[#0B1116]" : "bg-[#f8fafc]"}`}
+            >
+              <div className="max-w-6xl mx-auto mt-8">
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
+                    <div className="w-16 h-16 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin"></div>
+                    <h2
+                      className={`text-2xl font-bold ${isDark ? "text-white" : "text-slate-800"}`}
+                    >
+                      {loadingMsg}
+                    </h2>
+                    <p className={isDark ? "text-gray-400" : "text-gray-500"}>
+                      Cruzando datos de vuelos, estacionalidad y alojamiento.
+                    </p>
+                  </div>
+                ) : activePlan ? (
+                   <TripDashboard
+                    plan={activePlan}
+                    isDarkMode={isDark}
+                    totalBudget={budget}
+                    days={days}
+                    user={user}
+                    onSave={handleSavePlan}
+                  />
+                ) : null}
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
 
+      <footer
+        className={`w-full border-t py-8 text-center space-y-2 mt-auto z-10 ${isDark ? "border-white/5 bg-[#0B1116]" : "border-gray-200 bg-white"}`}
+      >
+        <p
+          className={`text-xs font-mono uppercase tracking-widest ${isDark ? "text-gray-600" : "text-gray-400"}`}
+        >
+          © 2026 Ventanapasillo.com
+        </p>
+      </footer>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        isDarkMode={isDark} 
+      />
     </div>
   );
 };

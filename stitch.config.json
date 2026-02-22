@@ -1,0 +1,14 @@
+{
+  "projectId": "projects/5569894438977040758",
+  "projectName": "ventanapasillo",
+  "lastSynced": "2026-02-17T23:47:28.316973Z",
+  "designTheme": {
+    "colorMode": "DARK",
+    "primaryColor": "#0db9f2",
+    "font": "SPACE_GROTESK",
+    "roundness": "ROUND_EIGHT"
+  },
+  "linkedScreens": [
+    "d3a9447aba3b41f7b5e2d4066670072e"
+  ]
+}

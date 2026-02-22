@@ -1,15 +1,26 @@
 {
   "summary": "Tokio inmersivo y económico: 7 días de neón, templos y la mejor comida callejera del mundo sin quebrar el banco.",
-  "flights_suggestion": {
+  "flight_fast": {
     "airline": "United / ANA (Escala en LAX)",
     "route": "SCL -> LAX -> NRT",
-    "price_estimate": "Est. $1,100 - $1,300 USD",
-    "duration": "26h Total",
-    "stops": "1 Escala",
+    "price_estimate": "$1,650 USD",
+    "duration": "24h Total",
+    "stops": "1 Escala Rápida",
     "emoji_icon": "✈️",
-    "call_to_action": "Rastrear Precios Bajos",
-    "affiliate_link": "https://ventanapasillo.com/track/flights/tokyo",
+    "call_to_action": "Reservar Vuelo Directo",
+    "affiliate_link": "",
     "tag_color": "#00C2FF"
+  },
+  "flight_cheap": {
+    "airline": "United / Jetstar",
+    "route": "SCL -> LAX -> HI -> NRT",
+    "price_estimate": "$1,100 USD",
+    "duration": "35h Total",
+    "stops": "2 Escalas",
+    "emoji_icon": "🛫",
+    "call_to_action": "Reservar Opción Ahorro",
+    "affiliate_link": "",
+    "tag_color": "#FF9F66"
   },
   "hotels_suggestion": [
     {

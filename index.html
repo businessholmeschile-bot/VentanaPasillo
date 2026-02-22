@@ -1,23 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andy v2.0 | Ventanapasillo.com</title>
+
+    <title>Ventanapasillo | Tu viaje diseñado por IA con Andy</title>
+    <meta
+      name="description"
+      content="Planifica tu próximo viaje de forma inteligente. Andy, nuestra IA experta, crea itinerarios personalizados basados en tu presupuesto, clima y preferencias."
+    />
+
+    <!-- OpenGraph / Social -->
+    <meta
+      property="og:title"
+      content="Ventanapasillo | Planificador de Viajes con IA"
+    />
+    <meta
+      property="og:description"
+      content="Diseña rutas únicas, optimiza tu presupuesto y descubre secretos locales con Andy."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ventanapasillo.com" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Travelpayouts Verification -->
+    <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
+      (function () {
+        var script = document.createElement("script");
+        script.async = 1;
+        script.src = "https://emrld.ltd/NTAxMjIx.js?t=501221";
+        document.head.appendChild(script);
+      })();
+    </script>
     <style>
       body {
-        font-family: "Inter", sans-serif;
+        font-family: "Space Grotesk", sans-serif;
+        background-color: #ffffff; /* Default light for White Mode initial load */
       }
     </style>
   </head>
-  <body class="bg-[#0F0F0F]">
+  <body class="selection:bg-brand-cyan selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

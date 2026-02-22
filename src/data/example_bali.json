@@ -1,15 +1,26 @@
 {
   "summary": "Bali en 3 días: Un escape relámpago a la Isla de los Dioses. Mezcla de espiritualidad en Ubud y atardeceres épicos en Uluwatu. Perfecto para luna de miel con toques de aventura.",
-  "flights_suggestion": {
-    "airline": "Qantas / Jetstar (Vía SYD)",
-    "route": "SCL -> SYD -> DPS",
-    "price_estimate": "Est. $1,450 - $1,700 USD",
-    "duration": "28h Total",
-    "stops": "1 Escala Larga",
+  "flight_fast": {
+    "airline": "Qantas / Emirates",
+    "route": "SCL -> DXB -> DPS",
+    "price_estimate": "$1,900 USD",
+    "duration": "24h Total",
+    "stops": "Directo (vía DXB)",
     "emoji_icon": "✈️",
-    "call_to_action": "Rastrear Vuelos",
+    "call_to_action": "Reservar Vuelo Directo",
     "affiliate_link": "https://ventanapasillo.com/track/flights/bali",
     "tag_color": "#00C2FF"
+  },
+  "flight_cheap": {
+    "airline": "United / Jetstar",
+    "route": "SCL -> LAX -> SYD -> DPS",
+    "price_estimate": "$1,250 USD",
+    "duration": "42h Total",
+    "stops": "2 Escalas Largas",
+    "emoji_icon": "🛫",
+    "call_to_action": "Reservar Opción Ahorro",
+    "affiliate_link": "https://ventanapasillo.com/track/flights/bali",
+    "tag_color": "#FF9F66"
   },
   "hotels_suggestion": [
     {

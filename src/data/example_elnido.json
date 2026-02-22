@@ -63,16 +63,29 @@
           "cost": "$24 USD (Tour)",
           "emoji_icon": "🚣",
           "location_url": "",
-          "is_paid_activity": true
+          "is_paid_activity": true,
+          "image_url": "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=2574&auto=format&fit=crop"
         },
         {
-          "time": "Evening",
+          "time": "Almuerzo",
+          "name": "Secret Beach Picnic",
+          "description": "Almuerzo buffet preparado en el barco en una playa privada de arena blanca. Pescado fresco y frutas tropicales.",
+          "cost": "Incluido",
+          "emoji_icon": "🥥",
+          "location_url": "",
+          "is_paid_activity": true,
+          "image_url": "https://images.unsplash.com/photo-1552074291-ad4dfd8b11c0?q=80&w=2670&auto=format&fit=crop"
+        },
+        {
+          "time": "Tarde",
           "name": "Atardecer en Las Cabañas",
           "description": "Tómate un shake de mango mientras ves el sol caer. El mejor spot post-tour.",
           "cost": "$5 USD",
           "emoji_icon": "🌅",
           "location_url": "",
-          "is_paid_activity": true
+          "is_paid_activity": true,
+          "image_url": "https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?q=80&w=2601&auto=format&fit=crop",
+          "tips": "Llega a las 17:00 para conseguir mesa en primera fila."
         }
       ]
     },
