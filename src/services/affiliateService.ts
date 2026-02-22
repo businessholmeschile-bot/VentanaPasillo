@@ -12,19 +12,19 @@ export class AffiliateService {
         return `https://tp.media/r?marker=${TP_MARKER}&p=4411&u=${encodeURIComponent(baseUrl)}`;
     }
 
-    // 2. Generate Hotel Link (Booking.com via Travelpayouts)
+    // 2. Generate Hotel Link (Trip.com via Travelpayouts)
     static getHotelLink(destination: string, hotelName?: string): string {
         const query = hotelName ? `${hotelName} ${destination}` : destination;
-        const baseUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(query)}`;
-        // Booking.com via Travelpayouts (p=1202 is Booking.com)
-        return `https://tp.media/r?marker=${TP_MARKER}&p=1202&u=${encodeURIComponent(baseUrl)}`;
+        const baseUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&keyword=${encodeURIComponent(hotelName || "")}`;
+        // Trip.com via Travelpayouts (p=12242 is Trip.com)
+        return `https://tp.media/r?marker=${TP_MARKER}&p=12242&u=${encodeURIComponent(baseUrl)}`;
     }
 
-    // 3. Generate Activity Link (Viator via Travelpayouts)
+    // 3. Generate Activity Link (GetYourGuide via Travelpayouts)
     static getActivityLink(activityName: string, destination: string): string {
-        const baseUrl = `https://www.viator.com/searchResults/all?text=${encodeURIComponent(activityName + " " + destination)}`;
-        // Viator via Travelpayouts (p=627 is Viator)
-        return `https://tp.media/r?marker=${TP_MARKER}&p=627&u=${encodeURIComponent(baseUrl)}`;
+        const baseUrl = `https://www.getyourguide.com/s/?q=${encodeURIComponent(activityName + " " + destination)}`;
+        // GetYourGuide via Travelpayouts (p=11488 is GetYourGuide)
+        return `https://tp.media/r?marker=${TP_MARKER}&p=11488&u=${encodeURIComponent(baseUrl)}`;
     }
 
     // 4. Enrich a full TravelPlan with real links
