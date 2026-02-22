@@ -1,65 +1,64 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --brand-cyan: #0db9f2;
-}
-
 @layer base {
   body {
-    @apply bg-white text-slate-900 antialiased selection:bg-brand-cyan selection:text-black;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply bg-brand-dark text-gray-200;
   }
-}
-
-.dark {
-  background-color: #0B1116;
-  color: #f1f5f9;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  @apply bg-brand-dark;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+  background: #222;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 hover:bg-white/20;
-}
-
-/* Animations */
+/* Hacker/Premium Animations */
 @keyframes pulse-cyan {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 185, 242, 0.4); }
-  50% { box-shadow: 0 0 20px 5px rgba(13, 185, 242, 0.2); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 185, 242, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(13, 185, 242, 0.2);
+  }
 }
 
 .animate-pulse-cyan {
   animation: pulse-cyan 2s infinite;
 }
 
-/* Map Overrides */
-.leaflet-container {
-  background-color: #0B1116 !important;
+.glass {
+  @apply backdrop-blur-md bg-white/5 border border-white/10;
 }
 
-.custom-popup .leaflet-popup-content-wrapper {
-  padding: 0;
-  overflow: hidden;
-  border-radius: 1rem;
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.loading-gradient {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(13, 185, 242, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }

@@ -3,18 +3,17 @@ import { Plane, Hotel, Map, Loader2 } from 'lucide-react';
 // Interfaces actualizadas con más detalle (basado en el feedback de Positano)
 export interface Activity {
   id: string; // New: Unique ID for interaction
-  time: string;
+  time: 'Desayuno' | 'Mañana' | 'Almuerzo' | 'Tarde' | 'Cena' | 'Noche';
   name: string;
   description: string;
   cost: string;
   emoji_icon: string;
   location_url: string;
   is_paid_activity: boolean;
-  tips: string;
-  activity_theme: 'snow' | 'beach' | 'desert' | 'mountain' | 'city' | 'jungle' | 'ocean' | 'food' | 'cultural' | 'party';
-  image_url?: string;
-  thumb_urls?: string[];
-  original_notes?: string; // New: For user edits
+  tips?: string; 
+  image_url?: string; 
+  thumb_urls?: string[]; 
+  activity_theme?: string; 
 }
 
 export interface Day {
@@ -242,30 +241,30 @@ export const generateProceduralPlan = (query: string): TravelPlan => {
         time: "Desayuno",
         name: "Desayuno Local Auténtico",
         description: `Comienza el día en una cafetería histórica o mercado para probar el desayuno típico de ${capitalizedDest}.`,
-        cost: "$8.000 - $12.000 CLP",
+        cost: "$8.500 - $12.000 CLP",
         emoji_icon: "☕",
         location_url: "",
         is_paid_activity: true,
-        tips: "Tip de experto sobre el lugar.",
-        image_url: getRandomImg("food"),
-        thumb_urls: getThumbnails("food"),
-        activity_theme: "food",
+        tips: "Pide la especialidad de la casa.",
+        image_url: getRandomImg('food'),
+        thumb_urls: getThumbnails('food'),
+        activity_theme: "food"
       },
       {
         id: `${dayNum}-morning`,
         time: "Mañana",
-        name: profile.vibe === "Relax & Naturaleza" ? "Naturaleza y Aire Puro" : "Inmersión Cultural",
+        name: `Visita a Icono: ${capitalizedDest}`,
         description: profile.vibe === "Relax & Naturaleza" 
             ? "Exploración de senderos naturales o playas vírgenes cercanas."
             : "Recorrido por los puntos históricos y monumentos más emblemáticos de la zona.",
-        cost: "$15.500 CLP",
+        cost: isAfternoonPaid ? "$20.000 CLP" : "Gratis",
         emoji_icon: profile.vibe === "Relax & Naturaleza" ? "🌿" : "🏛️",
         location_url: "",
-        is_paid_activity: true,
-        tips: "Lleva cámara.",
-        image_url: getRandomImg(profile.vibe === "Relax & Naturaleza" ? "mountain" : "cultural"),
-        thumb_urls: getThumbnails(profile.vibe === "Relax & Naturaleza" ? "mountain" : "cultural"),
-        activity_theme: profile.vibe === "Relax & Naturaleza" ? "mountain" : "cultural",
+        is_paid_activity: isAfternoonPaid,
+        tips: "Ve temprano para evitar multitudes.",
+        image_url: profile.vibe === "Relax & Naturaleza" ? getRandomImg('nature') : getRandomImg('city'),
+        thumb_urls: getThumbnails(profile.vibe === "Relax & Naturaleza" ? 'nature' : 'city'),
+        activity_theme: profile.vibe === "Relax & Naturaleza" ? "mountain" : "cultural"
       },
       {
         id: `${dayNum}-lunch`,
@@ -276,10 +275,10 @@ export const generateProceduralPlan = (query: string): TravelPlan => {
         emoji_icon: "🍽️",
         location_url: "",
         is_paid_activity: true,
-        tips: "Pide el plato de la casa.",
-        image_url: getRandomImg("food"),
-        thumb_urls: getThumbnails("food"),
-        activity_theme: "food",
+        tips: "Pregunta por el menú del día.",
+        image_url: getRandomImg('food'),
+        thumb_urls: getThumbnails('food'),
+        activity_theme: "food"
       },
       {
         id: `${dayNum}-afternoon`,
@@ -292,38 +291,37 @@ export const generateProceduralPlan = (query: string): TravelPlan => {
         emoji_icon: !isAfternoonPaid ? "🎫" : "🚶",
         location_url: "",
         is_paid_activity: !isAfternoonPaid,
-        image_url: getRandomImg(!isAfternoonPaid ? "city" : "cultural"),
-        tips: "Reserva con tiempo si es museo.",
-        thumb_urls: getThumbnails(!isAfternoonPaid ? "city" : "cultural"),
-        activity_theme: !isAfternoonPaid ? "city" : "cultural",
+        image_url: !isAfternoonPaid ? getRandomImg('cultural') : getRandomImg('city'),
+        tips: "Ideal para capturar el atardecer.",
+        thumb_urls: getThumbnails(!isAfternoonPaid ? 'cultural' : 'city'),
+        activity_theme: !isAfternoonPaid ? "cultural" : "city"
       },
       {
         id: `${dayNum}-dinner`,
         time: "Cena",
         name: "Cena con Estilo",
         description: "Restaurante con atmósfera vibrante para disfrutar de la noche local.",
-        cost: "$30.000 - $60.000 CLP",
+        cost: "$35.000 - $65.000 CLP",
         emoji_icon: "🍷",
         location_url: "",
-        tips: "Disfruta el vino local.",
         is_paid_activity: true,
-        image_url: getRandomImg("food"),
-        thumb_urls: getThumbnails("food"),
-        activity_theme: "food",
+        image_url: getRandomImg('food'),
+        thumb_urls: getThumbnails('food'),
+        activity_theme: "food"
       },
       {
         id: `${dayNum}-night`,
         time: "Noche",
-        name: "Ruta Nocturna Andy",
-        description: "Un bar secreto o lugar de música en vivo para cerrar el día.",
+        name: "Vibra Nocturna",
+        description: "Bar de tragos de autor, club de música en vivo o un paseo bajo las estrellas.",
         cost: "Variable",
         emoji_icon: "🍸",
         location_url: "",
         is_paid_activity: true,
-        tips: "Lleva identificación.",
-        image_url: getRandomImg("party"),
-        thumb_urls: getThumbnails("party"),
-        activity_theme: "party",
+        tips: "Prueba el cóctel local.",
+        image_url: getRandomImg('party'),
+        thumb_urls: getThumbnails('party'),
+        activity_theme: "party"
       }
     ];
   };
