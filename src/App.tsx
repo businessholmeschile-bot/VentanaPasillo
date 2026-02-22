@@ -22,7 +22,9 @@ const App: React.FC = () => {
   // Map Filter State with Persistence
   const [budget, setBudget] = useState<number>(() => {
     const saved = localStorage.getItem("vp_budget");
-    return saved ? Number(saved) : 2500000;
+    // If it's a legacy USD value (small), reset to CLP default
+    const val = saved ? Number(saved) : 2500000;
+    return val < 100000 ? 2500000 : val;
   });
   const [days, setDays] = useState<number>(() => {
     const saved = localStorage.getItem("vp_days");

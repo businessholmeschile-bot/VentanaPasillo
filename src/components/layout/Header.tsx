@@ -135,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({
             <div className="flex flex-col -space-y-1">
               <span className="text-[8px] uppercase font-black text-gray-500 tracking-wider">Presupuesto</span>
               <span className={`text-base font-black ${darkMode ? "text-brand-cyan" : "text-brand-cyan"}`}>
-                ${budget}
+                ${budget.toLocaleString('es-CL')}
               </span>
             </div>
             <div className="flex flex-col -space-y-1">
@@ -195,14 +195,14 @@ const Header: React.FC<HeaderProps> = ({
                   Presupuesto
                 </label>
                 <span className="text-sm font-black text-brand-cyan">
-                  ${budget} <span className="text-[10px] text-gray-500 font-normal">USD</span>
+                  ${budget.toLocaleString('es-CL')} <span className="text-[10px] text-gray-500 font-normal">CLP</span>
                 </span>
               </div>
               <input
                 type="range"
-                min="500"
-                max="10000"
-                step="100"
+                min="500000"
+                max="10000000"
+                step="100000"
                 value={budget}
                 onChange={(e) => setBudget(Number(e.target.value))}
                 className="w-full h-1.5 bg-brand-cyan/20 rounded-lg appearance-none cursor-pointer accent-brand-cyan"
@@ -374,14 +374,14 @@ const Header: React.FC<HeaderProps> = ({
                 Presupuesto
               </label>
               <span className="text-lg font-black text-brand-cyan">
-                ${budget}
+                ${budget.toLocaleString('es-CL')}
               </span>
             </div>
             <input
               type="range"
-              min="500"
-              max="10000"
-              step="100"
+              min="500000"
+              max="10000000"
+              step="100000"
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
               className="w-full h-2 bg-brand-cyan/20 rounded-lg appearance-none cursor-pointer accent-brand-cyan"
