@@ -1,301 +1,204 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
+import { Globe } from "lucide-react";
+
+// Components
 import Header from "./components/layout/Header";
+import FilterBar from "./components/layout/FilterBar";
 import InteractiveMap, {
-  Destination,
   VALIDATED_DESTINATIONS,
 } from "./components/map/InteractiveMap";
-import { AndyBrain } from "./services/AndyBrain";
 import TripDashboard from "./components/dashboard/TripDashboard";
-import { TravelPlan, generateProceduralPlan } from "./services/aiPlanner";
 import PlaneTakeoff from "./components/animations/PlaneTakeoff";
-import AuthModal from "./components/auth/AuthModal";
-import { supabase } from "./lib/supabaseClient";
-import { User } from "@supabase/supabase-js";
+
+// Services
+import { AndyBrain } from "./services/AndyBrain";
+import { generateProceduralPlan } from "./services/aiPlanner";
 import { AffiliateService } from "./services/affiliateService";
-import FloatingRouteBar from "./components/map/FloatingRouteBar";
 
 const App: React.FC = () => {
-  // Default to Light "White Mode"
-  const [theme, setTheme] = useState<"dark" | "light">("light");
-  const [lang, setLang] = useState<"es" | "en">("es");
-
-  // Map Filter State with Persistence
-  const [budget, setBudget] = useState<number>(() => {
-    const saved = localStorage.getItem("vp_budget");
-    return saved ? Number(saved) : 3000;
-  });
-  const [days, setDays] = useState<number>(() => {
-    const saved = localStorage.getItem("vp_days");
-    return saved ? Number(saved) : 7;
-  });
+  // --- STATE ---
+  const [activePlan, setActivePlan] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFlying, setIsFlying] = useState(false);
+  
+  // Filters & Global State
+  const [budget, setBudget] = useState(2500000);
+  const [days, setDays] = useState(7);
   const [climates, setClimates] = useState<string[]>([]);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-  const [selectedDestinations, setSelectedDestinations] = useState<string[]>(
-    () => {
-      const saved = localStorage.getItem("vp_destinations");
-      return saved ? JSON.parse(saved) : [];
-    },
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [activePlan, setActivePlan] = useState<TravelPlan | null>(null);
-  const [loadingMsg, setLoadingMsg] = useState("Andy está optimizando tu ruta...");
-  const [isFlying, setIsFlying] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(true);
+  
+  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [lang, setLang] = useState<"es" | "en">("es");
+  const [user, setUser] = useState<any>(null);
 
   const dashboardRef = useRef<HTMLDivElement>(null);
   const planButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    // Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Loading Message Cycle
-  useEffect(() => {
-    if (!isLoading) return;
-    const msgs = [
-      "Andy está analizando estacionalidad...",
-      "Cruzando datos de vuelos en tiempo real...",
-      "Buscando los mejores hoteles para tu presupuesto...",
-      "Diseñando experiencias auténticas...",
-      "Casi listo. Ajustando detalles finales..."
-    ];
-    let i = 0;
-    const interval = setInterval(() => {
-      setLoadingMsg(msgs[i % msgs.length]);
-      i++;
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [isLoading]);
-
-  // Persistence Effects
-  useEffect(() => {
-    localStorage.setItem("vp_budget", budget.toString());
-  }, [budget]);
-
-  useEffect(() => {
-    localStorage.setItem("vp_days", days.toString());
-  }, [days]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "vp_destinations",
-      JSON.stringify(selectedDestinations),
-    );
-  }, [selectedDestinations]);
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
-  const toggleTheme = () =>
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  const toggleLang = () => setLang((prev) => (prev === "es" ? "en" : "es"));
-
-  const toggleClimate = (c: string) => {
-    setClimates((prev) =>
-      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
-    );
-  };
-
-  const toggleThemeTag = (t: string) => {
-    setSelectedThemes((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
-    );
-  };
-
+  // --- ACTIONS ---
   const handleToggleDestination = (id: string, isValid: boolean) => {
-    setSelectedDestinations((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((d) => d !== id);
-      } else {
-        if (!isValid && budget > 0) return prev;
-        return [...prev, id];
-      }
-    });
+    // We allow selecting even if "invalid" by budget for now, Andy will handle it
+    setSelectedDestinations(prev => 
+      prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]
+    );
   };
 
   const handleRemoveDestination = (id: string) => {
     setSelectedDestinations(prev => prev.filter(d => d !== id));
   };
 
+  const toggleClimate = (c: string) => {
+    setClimates(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  };
+
+  const toggleThemeTag = (t: string) => {
+    setSelectedThemes(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]);
+  };
+
+  const handleEditActivity = (dayIdx: number, actIdx: number) => {
+    if (!activePlan) return;
+    const activity = activePlan.itinerary[dayIdx].activities[actIdx];
+    const newName = prompt("Nuevo nombre para la actividad:", activity.name);
+    if (newName) {
+       const newItinerary = [...activePlan.itinerary];
+       newItinerary[dayIdx].activities[actIdx] = { ...activity, name: newName };
+       setActivePlan({ ...activePlan, itinerary: newItinerary });
+    }
+  };
+
+  const handleDeleteActivity = (dayIdx: number, actIdx: number) => {
+    if (!activePlan) return;
+    const newItinerary = [...activePlan.itinerary];
+    newItinerary[dayIdx].activities.splice(actIdx, 1);
+    setActivePlan({ ...activePlan, itinerary: newItinerary });
+  };
+
   const handleGeneratePlan = async () => {
     if (selectedDestinations.length === 0) return;
     
-    // Trigger Plane Animation
     setIsFlying(true);
-    setActivePlan(null); // Clear previous results
-    
-    // Smooth scroll and loading delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    setActivePlan(null);
     setIsLoading(true);
-    setLoadingMsg("Andy está conectándose con la red de viajes...");
-    
-    setTimeout(() => {
-      if (dashboardRef.current) {
-        const top = dashboardRef.current.getBoundingClientRect().top + window.pageYOffset - 80;
-        window.scrollTo({ top, behavior: "smooth" });
-      }
-    }, 100);
 
     const destinationNames = selectedDestinations
       .map((id) => VALIDATED_DESTINATIONS.find((d) => d.id === id)?.name)
       .join(", ");
-    const query = `Viaje a ${destinationNames} por ${days} días con un presupuesto de $${budget} USD. Filtros: ${climates.join(", ")} ${selectedThemes.join(", ")}.`;
+    
+    let query = `Viaje a ${destinationNames} por ${days} días con un presupuesto total de $${budget.toLocaleString('es-CL')} CLP saliendo desde Santiago (SCL).`;
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
-    if (apiKey) {
-      try {
-        const brain = new AndyBrain(apiKey);
-        const plan = await brain.generateItinerary(query);
-        if (plan) {
-          const enriched = AffiliateService.enrichPlanWithLinks(plan);
-          setActivePlan(enriched);
-        } else {
-          setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
-        }
-      } catch (err) {
-        console.error("AndyBrain Error:", err);
-        setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
+    const deepseekKey = import.meta.env.VITE_DEEPSEEK_API_KEY || "";
+
+    try {
+      const brain = new AndyBrain(geminiKey, openaiKey, deepseekKey);
+      const plan = await brain.generateItinerary(query);
+      if (plan) {
+        setActivePlan(plan);
+      } else {
+        setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query), "SCL"));
       }
-    } else {
-      // Simulate real thinking time for the demo
-      await new Promise(resolve => setTimeout(resolve, 3500));
-      setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query)));
+    } catch (err) {
+      console.error("AndyBrain Error:", err);
+      setActivePlan(AffiliateService.enrichPlanWithLinks(generateProceduralPlan(query), "SCL"));
+    } finally {
+      setIsLoading(false);
+      setIsFlying(false);
+      setTimeout(() => {
+        dashboardRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
     }
-
-    setIsLoading(false);
-    setTimeout(() => setIsFlying(false), 4000);
   };
-
-  const handleSavePlan = async () => {
-    if (!user) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-    // Simulation of saving
-    alert("¡Viaje guardado en tu perfil! Andy lo ha archivado para tu próxima aventura.");
-  };
-
-  const isDark = theme === "dark";
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-500 ${isDark ? "bg-[#0B1116] text-gray-200" : "bg-white text-slate-900"} font-sans flex flex-col`}
-    >
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#0B1116] text-slate-200' : 'bg-white text-slate-900'}`}>
+      
+      {/* Plane Animation Overlay */}
       <PlaneTakeoff isFlying={isFlying} buttonRef={planButtonRef} />
+
       <Header
-        darkMode={isDark}
-        toggleTheme={toggleTheme}
+        darkMode={theme === "dark"}
+        toggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
         lang={lang}
-        toggleLang={toggleLang}
+        toggleLang={() => setLang(l => l === 'es' ? 'en' : 'es')}
         budget={budget}
-        setBudget={setBudget}
         days={days}
-        setDays={setDays}
-        climates={climates}
-        toggleClimate={toggleClimate}
-        selectedThemes={selectedThemes}
-        toggleThemeTag={toggleThemeTag}
-        selectedDestinations={selectedDestinations}
-        destinations={VALIDATED_DESTINATIONS}
-        onGeneratePlan={handleGeneratePlan}
-        onRemoveDestination={handleRemoveDestination}
-        planButtonRef={planButtonRef}
+        isFiltersOpen={isFiltersOpen}
+        setIsFiltersOpen={setIsFiltersOpen}
         user={user}
-        onLogin={() => setIsAuthModalOpen(true)}
+        onLogin={() => {}}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
-      <main className="flex-grow flex flex-col relative w-full mt-[60px]">
-        <div
-          className="relative w-full"
-          style={{ height: "calc(100vh - 60px)" }}
-        >
-          <div className="absolute inset-0 z-0">
-            <InteractiveMap
-              budget={budget}
-              days={days}
-              climates={climates}
-              selectedThemes={selectedThemes}
-              selectedDestinations={selectedDestinations}
-              onToggleDestination={handleToggleDestination}
-              isDarkMode={isDark}
-            />
-          </div>
+      <div className={`transition-all duration-300 overflow-hidden ${isFiltersOpen ? 'max-h-[500px]' : 'max-h-0'}`}>
+        <FilterBar 
+          budget={budget}
+          setBudget={setBudget}
+          days={days}
+          setDays={setDays}
+          climates={climates}
+          toggleClimate={toggleClimate}
+          selectedThemes={selectedThemes}
+          toggleThemeTag={toggleThemeTag}
+          onGeneratePlan={handleGeneratePlan}
+          selectedDestinations={selectedDestinations}
+          destinations={VALIDATED_DESTINATIONS}
+          onRemoveDestination={handleRemoveDestination}
+          isDarkMode={theme === 'dark'}
+        />
+      </div>
 
-          <FloatingRouteBar 
+      <main className="flex flex-col w-full min-h-[calc(100vh-70px)]">
+        {/* Map Section */}
+        <section className="relative w-full h-[60vh] border-b border-black/10">
+          <InteractiveMap
+            budget={budget}
+            days={days}
+            climates={climates}
+            selectedThemes={selectedThemes}
             selectedDestinations={selectedDestinations}
-            destinations={VALIDATED_DESTINATIONS}
-            onRemoveDestination={handleRemoveDestination}
-            isDarkMode={isDark}
+            onToggleDestination={handleToggleDestination}
+            isDarkMode={theme === "dark"}
+            searchQuery={searchQuery}
           />
-        </div>
-
-        <div ref={dashboardRef} className="w-full">
-          {(isLoading || activePlan) && (
-            <div
-              className={`w-full min-h-screen p-4 md:p-8 ${isDark ? "bg-[#0B1116]" : "bg-[#f8fafc]"}`}
-            >
-              <div className="max-w-6xl mx-auto mt-8">
-                {isLoading ? (
-                  <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
-                    <div className="w-16 h-16 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin"></div>
-                    <h2
-                      className={`text-2xl font-bold ${isDark ? "text-white" : "text-slate-800"}`}
-                    >
-                      {loadingMsg}
-                    </h2>
-                    <p className={isDark ? "text-gray-400" : "text-gray-500"}>
-                      Cruzando datos de vuelos, estacionalidad y alojamiento.
-                    </p>
-                  </div>
-                ) : activePlan ? (
-                   <TripDashboard
-                    plan={activePlan}
-                    isDarkMode={isDark}
-                    totalBudget={budget}
-                    days={days}
-                    user={user}
-                    onSave={handleSavePlan}
-                  />
-                ) : null}
+          {isLoading && (
+            <div className="absolute inset-0 z-[2000] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-white font-black uppercase tracking-widest text-sm">Andy está pensando...</p>
               </div>
             </div>
           )}
-        </div>
+        </section>
+
+        {/* Dashboard Section */}
+        <section ref={dashboardRef} className="w-full bg-slate-50 dark:bg-[#080d11]">
+          {activePlan ? (
+            <div className="max-w-7xl mx-auto py-12 px-6">
+              <TripDashboard 
+                plan={activePlan} 
+                isDarkMode={theme === "dark"}
+                totalBudget={budget}
+                days={days}
+                onDeleteActivity={handleDeleteActivity} 
+                onEditActivity={handleEditActivity}
+              />
+            </div>
+          ) : !isLoading && (
+            <div className="py-24 text-center opacity-30">
+              <Globe size={64} className="mx-auto mb-4 text-slate-400" />
+              <p className="text-xl font-bold uppercase tracking-tighter">Explora el mapa y selecciona tu ruta para comenzar</p>
+            </div>
+          )}
+        </section>
       </main>
 
-      <footer
-        className={`w-full border-t py-8 text-center space-y-2 mt-auto z-10 ${isDark ? "border-white/5 bg-[#0B1116]" : "border-gray-200 bg-white"}`}
-      >
-        <p
-          className={`text-xs font-mono uppercase tracking-widest ${isDark ? "text-gray-600" : "text-gray-400"}`}
-        >
-          © 2026 Ventanapasillo.com
-        </p>
+      <footer className="py-12 border-t border-black/5 dark:border-white/5 text-center opacity-40">
+        <p className="text-xs font-bold uppercase tracking-widest">Ventanapasillo.com — HQ Santiago de Chile</p>
       </footer>
-
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-        isDarkMode={isDark} 
-      />
     </div>
   );
 };

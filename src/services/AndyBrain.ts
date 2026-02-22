@@ -2,221 +2,150 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { TravelPlan, getRandomImg, getThumbnails } from "../services/aiPlanner"; 
 import { AffiliateService } from "./affiliateService";
 
-// NOTE: This is a server-side script or Edge Function logic. 
-// In a real Vite app, this should be an API route (e.g., via Vercel Functions or a separate backend).
-// For this prototype, we will simulate the API call within the client using the API key directly (NOT FOR PRODUCTION).
-
-// ⚠️ WARNING: EXPOSING API KEY IN CLIENT-SIDE CODE IS UNSAFE FOR PRODUCTION.
-// For this demo/MVP, we will use a placeholder or assume the user provides it, 
-// or use a proxy. For now, we'll implement the "Brain" logic class.
-
 export class AndyBrain {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
+  private geminiKey: string;
+  private openAIKey: string;
+  private deepseekKey: string;
 
-  constructor(apiKey: string) {
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  constructor(geminiKey: string = "", openAIKey: string = "", deepseekKey: string = "") {
+    this.geminiKey = geminiKey || import.meta.env.VITE_GEMINI_API_KEY || "";
+    this.openAIKey = openAIKey || import.meta.env.VITE_OPENAI_API_KEY || "";
+    this.deepseekKey = deepseekKey || import.meta.env.VITE_DEEPSEEK_API_KEY || "";
+  }
+
+  private getBasePrompt(query: string) {
+    return `
+      Eres Andy, un planificador de viajes experto, sofisticado y con "calle". Tu estilo es moderno, directo y enfocado en experiencias auténticas.
+      
+      El usuario busca: "${query}"
+
+      Genera un itinerario de viaje detallado en formato JSON estricto.
+      
+      REGLAS CRÍTICAS:
+      1. **Vuelos**: SALIENDO SIEMPRE DESDE SANTIAGO DE CHILE (SCL). Necesito "flight_fast" (Directo/Premium) y "flight_cheap" (Low-cost).
+      2. **Precios**: SIEMPRE en Pesos Chilenos (CLP). Ejemplo: "$1.250.000 CLP".
+      3. **Actividades**: 6 actividades por día (Desayuno, Mañana, Almuerzo, Tarde, Cena, Noche).
+      4. **Themes**: Usa ['snow', 'beach', 'desert', 'mountain', 'city', 'jungle', 'ocean', 'food', 'cultural', 'party'].
+      5. **IDs**: Asigna IDs únicos a cada actividad.
+      
+      Estructura JSON:
+      {
+        "destination_name": "...",
+        "summary": "...",
+        "flight_fast": { "airline": "...", "route": "SCL -> ...", "price_estimate": "...", ... },
+        "flight_cheap": { ... },
+        "hotels_suggestion": [{ "name": "...", "price_night": "...", ... }],
+        "itinerary": [{ "day": 1, "title": "...", "activities": [{ "id": "...", "time": "...", "name": "...", "cost": "...", "activity_theme": "...", ... }] }]
+      }
+      SOLO ENTREGA EL JSON, sin markdown.
+    `;
   }
 
   async generateItinerary(query: string): Promise<TravelPlan | null> {
+    // Try Gemini First
+    if (this.geminiKey) {
+      console.log("🧠 Intentando con Gemini...");
+      const plan = await this.tryGemini(query);
+      if (plan) return plan;
+    }
+
+    // Try ChatGPT/OpenAI Second
+    if (this.openAIKey) {
+      console.log("🤖 Fallback a ChatGPT...");
+      const plan = await this.tryOpenAI(query);
+      if (plan) return plan;
+    }
+
+    // Try DeepSeek Third
+    if (this.deepseekKey) {
+      console.log("🐳 Fallback a DeepSeek...");
+      const plan = await this.tryDeepSeek(query);
+      if (plan) return plan;
+    }
+
+    return null;
+  }
+
+  private async tryGemini(query: string): Promise<TravelPlan | null> {
     try {
-      const prompt = `
-        Eres Andy, un planificador de viajes experto, sofisticado y con "calle". Tu estilo es moderno, directo y enfocado en experiencias auténticas, ya sea lujo o aventura.
-        
-        El usuario busca: "${query}"
-
-        Genera un itinerario de viaje detallado en formato JSON estricto.
-        El plan debe ser lógico, geográficamente coherente y realista.
-        
-        Reglas de Oro:
-        1. **Personalidad**: Usa un tono cercano pero experto.
-        2. **Themes**: Asigna a cada actividad un 'activity_theme' de esta lista EXACTA (elige la más relevante): ['snow', 'beach', 'desert', 'mountain', 'city', 'jungle', 'ocean', 'food', 'cultural', 'party'].
-        3. **Vuelos**: Necesito DOS opciones de vuelos:
-           - "flight_fast": El vuelo más directo/veloz disponible (pocas escalas, aerolínea premium).
-           - "flight_cheap": El vuelo más económico disponible (posiblemente con escalas, aerolínea low-cost).
-        4. **Precios**: Estima costos reales en USD.
-        5. **Estructura**: Sigue EXACTAMENTE el esquema JSON solicitado. No añadas markdown, solo JSON.
-
-        Esquema JSON Esperado (TravelPlan):
-        {
-          "destination_name": "Nombre Ciudad/País",
-          "summary": "Resumen persuasivo de 2 lineas del viaje.",
-          "traveler_type": "Solo/Pareja/Familia/Amigos",
-          "trip_vibe": "Cultural/Aventura/Relax/Lujo/Fiesta",
-          "flight_fast": {
-            "airline": "Nombre Aerolínea Sugerida",
-            "route": "Origen -> Destino",
-            "price_estimate": "$XXX USD",
-            "duration": "XXh XXm",
-            "stops": "Directo",
-            "emoji_icon": "✈️",
-            "call_to_action": "Reservar Vuelo Directo",
-            "affiliate_link": "",
-            "tag_color": "#00C2FF"
-          },
-          "flight_cheap": {
-            "airline": "Nombre Aerolínea Sugerida",
-            "route": "Origen -> Destino",
-            "price_estimate": "$XXX USD",
-            "duration": "XXh XXm",
-            "stops": "1+ Escalas",
-            "emoji_icon": "🛫",
-            "call_to_action": "Reservar Opción Ahorro",
-            "affiliate_link": "",
-            "tag_color": "#FF9F66"
-          },
-          "hotels_suggestion": [
-            {
-              "name": "Nombre Hotel 1",
-              "location": "Barrio/Zona",
-              "price_night": "$XXX USD",
-              "reason_to_book": "Por qué es genial",
-              "emoji_icon": "🏨",
-              "call_to_action": "Reservar",
-              "affiliate_link": "",
-              "tag_color": "#00C2FF",
-              "badges": ["Tag1", "Tag2"]
-            },
-             {
-              "name": "Nombre Hotel 2 (Opción B)",
-              "location": "Barrio/Zona",
-              "price_night": "$XXX USD",
-              "reason_to_book": "Por qué es genial",
-              "emoji_icon": "🏡",
-              "call_to_action": "Reservar",
-              "affiliate_link": "",
-              "tag_color": "#FF9F66",
-              "badges": ["Tag1", "Tag2"]
-            }
-          ],
-          "local_secrets": [
-            {
-              "title": "Secreto 1",
-              "description": "Detalle del secreto",
-              "type": "Foodie/View/Culture",
-              "emoji_icon": "🤫",
-              "tag_color": "#00C2FF"
-            },
-            {
-               "title": "Secreto 2",
-               "description": "Detalle del secreto",
-               "type": "Hack",
-               "emoji_icon": "💎",
-               "tag_color": "#FF9F66"
-            }
-          ],
-          "itinerary": [
-            {
-              "day": 1,
-              "title": "Explorando lo mejor de...",
-              "activities": [
-                {
-                  "time": "Desayuno",
-                  "name": "Café o Panadería local icónica",
-                  "description": "Comienza con sabor local. Detalla qué pedir.",
-                  "cost": "$XX USD",
-                  "emoji_icon": "☕",
-                  "location_url": "",
-                  "is_paid_activity": true,
-                  "tips": "Tip de experto sobre el lugar.",
-                  "activity_theme": "food"
-                },
-                {
-                  "time": "Mañana",
-                  "name": "Atracción Principal / Monumento",
-                  "description": "La visita obligada de la mañana.",
-                  "cost": "$XX USD / Gratis",
-                  "emoji_icon": "🏛️",
-                  "location_url": "",
-                  "is_paid_activity": true,
-                  "tips": "Cómo evitar filas o mejor punto para fotos.",
-                  "activity_theme": "cultural"
-                },
-                {
-                  "time": "Almuerzo",
-                  "name": "Restaurante de comida típica",
-                  "description": "El plato que no puedes ignorar aquí.",
-                  "cost": "$XX USD",
-                  "emoji_icon": "🍽️",
-                  "location_url": "",
-                  "is_paid_activity": true,
-                  "tips": "Dato sobre reserva o mesa con vista.",
-                  "activity_theme": "food"
-                },
-                {
-                  "time": "Tarde",
-                  "name": "Actividad de ocio o paseo por barrio",
-                  "description": "Relato de la tarde: qué ver y dónde caminar.",
-                  "cost": "Gratis",
-                  "emoji_icon": "🚶",
-                  "location_url": "",
-                  "is_paid_activity": false,
-                  "tips": "Vistas imperdibles o rincón secreto.",
-                  "activity_theme": "city"
-                },
-                {
-                  "time": "Cena",
-                  "name": "Cena con Ambiente / Fine Dining",
-                  "description": "Experiencia nocturna gastronómica.",
-                  "cost": "$XX USD",
-                  "emoji_icon": "🍷",
-                  "location_url": "",
-                  "is_paid_activity": true,
-                  "tips": "Recomendación de trago o mesa.",
-                  "activity_theme": "food"
-                },
-                {
-                  "time": "Noche",
-                  "name": "Bar / Música en vivo / Club",
-                  "description": "Cómo se vive la noche en este lugar.",
-                  "cost": "$XX USD / Gratis",
-                  "emoji_icon": "🍸",
-                  "location_url": "",
-                  "is_paid_activity": true,
-                  "tips": "Trago insignia del bar.",
-                  "activity_theme": "party"
-                }
-              ]
-            }
-          ]
-        }
-
-        REGLA CRÍTICA: Debes incluir EXACTAMENTE las 6 actividades (Desayuno, Mañana, Almuerzo, Tarde, Cena, Noche) para CADA DÍA del itinerario. No omitas ninguna.
-      `;
-
-      const result = await this.model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+      const genAI = new GoogleGenerativeAI(this.geminiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = this.getBasePrompt(query);
       
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      return this.processResponse(text);
+    } catch (e) {
+      console.error("Gemini Error:", e);
+      return null;
+    }
+  }
+
+  private async tryOpenAI(query: string): Promise<TravelPlan | null> {
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.openAIKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: this.getBasePrompt(query) }],
+          temperature: 0.7
+        })
+      });
+      const data = await response.json();
+      return this.processResponse(data.choices[0].message.content);
+    } catch (e) {
+      console.error("OpenAI Error:", e);
+      return null;
+    }
+  }
+
+  private async tryDeepSeek(query: string): Promise<TravelPlan | null> {
+    try {
+      const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.deepseekKey}`
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: [{ role: "user", content: this.getBasePrompt(query) }],
+          temperature: 0.7
+        })
+      });
+      const data = await response.json();
+      return this.processResponse(data.choices[0].message.content);
+    } catch (e) {
+      console.error("DeepSeek Error:", e);
+      return null;
+    }
+  }
+
+  private processResponse(text: string): TravelPlan | null {
+    try {
       const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
       let plan = JSON.parse(cleanJson);
 
-      // Post-Processing: Inject Safe Images based on Themes (Legacy Mode but with expanded dictionary)
+      // Post-Processing images & links
       if (plan.itinerary) {
         plan.itinerary.forEach((day: any) => {
-           if (day.activities) {
-               day.activities.forEach((act: any) => {
-                   // Fallback to 'city' if theme is missing or invalid
-                   const theme = (act.activity_theme && ['snow', 'beach', 'desert', 'mountain', 'city', 'jungle', 'ocean', 'food', 'cultural', 'party'].includes(act.activity_theme)) 
-                        ? act.activity_theme 
-                        : 'city';
-                   
-                   act.image_url = getRandomImg(theme);
-                   act.thumb_urls = getThumbnails(theme);
-               });
-           }
+          day.activities?.forEach((act: any) => {
+            const theme = (act.activity_theme && ['snow', 'beach', 'desert', 'mountain', 'city', 'jungle', 'ocean', 'food', 'cultural', 'party'].includes(act.activity_theme)) 
+              ? act.activity_theme 
+              : 'city';
+            act.image_url = getRandomImg(theme);
+            act.thumb_urls = getThumbnails(theme);
+          });
         });
       }
 
-      // Post-Processing: Inject Affiliate Links
-      // Default Origin: Santiago/SCL (As per user context/demo)
-      plan = AffiliateService.enrichPlanWithLinks(plan, "SCL");
-
-      return plan;
-
-    } catch (error) {
-      console.error("Brain Freeze! 🧠❄️", error);
+      return AffiliateService.enrichPlanWithLinks(plan, "SCL");
+    } catch (e) {
+      console.error("JSON Process Error:", e);
       return null;
     }
   }
